@@ -18,13 +18,13 @@ Responsible for front-end node communication and cryptographic encounter generat
 * `src/shamir_utils.py`
 * `src/network_udp.py`
 * `src/crypto_utils.py` (EphID / Diffie-Hellman related logic)
+* `src/dbf_manager.py`
 
 ### Emrik Moe
 
 Responsible for Bloom Filter storage and back-end communication:
 
 * `src/bloom.py`
-* `src/dbf_manager.py`
 * `src/DimyServer.py`
 * `src/network_tcp.py`
 
@@ -161,3 +161,144 @@ Shared protocol helpers for:
 * JSON serialization.
 * Base64 conversion for binary fields.
 * Common validation utilities.
+
+---
+
+## Yuanqi Lu's part
+
+This part covers the frontend protocol core from Task 1 to Task 5, and the handoff into Task 6 to Task 8 scheduling.
+
+### Files
+
+* [`src/Dimy.py`](src/Dimy.py)
+* [`src/shamir_utils.py`](src/shamir_utils.py)
+* [`src/network_udp.py`](src/network_udp.py)
+* [`src/crypto_utils.py`](src/crypto_utils.py)
+* [`src/dbf_manager.py`](src/dbf_manager.py)
+* [`tests/test_crypto.py`](tests/test_crypto.py)
+* [`tests/test_shamir.py`](tests/test_shamir.py)
+* [`tests/test_udp_messages.py`](tests/test_udp_messages.py)
+* [`tests/test_end_to_end.py`](tests/test_end_to_end.py)
+* [`tests/test_dbf_manager.py`](tests/test_dbf_manager.py)
+* [`tests/test_task6_8_flow.py`](tests/test_task6_8_flow.py)
+
+### Responsibilities
+
+This part is responsible for the following protocol stages:
+
+1. Generate a 32-byte EphID.
+2. Split the EphID into `n` shares using `k`-out-of-`n` Shamir Secret Sharing.
+3. Broadcast one share every 3 seconds using UDP.
+4. Receive shares from other nodes and simulate message drops with probability `p`.
+5. Reconstruct a peer EphID after receiving at least `k` distinct shares.
+6. Verify the reconstructed EphID using the advertised hash.
+7. Derive a shared EncID using Diffie-Hellman.
+8. Insert EncID into the current DBF.
+9. Rotate DBFs and generate QBFs on schedule.
+
+### Main Interfaces
+
+#### `src/crypto_utils.py`
+
+* `generate_ephid_keypair() -> LocalEphID`
+
+  * Generates one fresh local EphID state.
+  * Returns a local X25519 private key, 32-byte public key bytes, and the SHA-256 hash of the public key.
+
+* `hash_ephid(ephid: bytes) -> str`
+
+  * Computes the SHA-256 hash of a 32-byte EphID.
+
+* `verify_ephid_hash(ephid: bytes, expected_hash: str) -> bool`
+
+  * Verifies that a reconstructed EphID matches the advertised hash.
+
+* `load_peer_public_key(ephid_bytes: bytes)`
+
+  * Loads peer EphID bytes as an X25519 public key.
+
+* `derive_encounter_id(my_private_key, peer_ephid_bytes, my_ephid_hash, peer_ephid_hash) -> bytes`
+
+  * Performs Diffie-Hellman and derives a symmetric 32-byte EncID.
+
+#### `src/shamir_utils.py`
+
+* `split_secret(secret: bytes, k: int, n: int) -> list[ShamirShare]`
+
+  * Splits a secret into `n` shares with threshold `k`.
+
+* `combine_shares(shares: list[ShamirShare], k: int) -> bytes`
+
+  * Reconstructs the secret from at least `k` distinct shares.
+
+* `serialize_share(share: ShamirShare) -> str`
+
+  * Serializes a share into a transport-safe string.
+
+* `deserialize_share(text: str) -> ShamirShare`
+
+  * Parses a serialized share string.
+
+#### `src/network_udp.py`
+
+* `UDPShareTransport.start()`
+
+  * Starts the UDP receiver thread.
+
+* `UDPShareTransport.stop()`
+
+  * Stops the UDP receiver thread and closes sockets.
+
+* `UDPShareTransport.send_packet(packet: dict) -> None`
+
+  * Sends one JSON packet over UDP.
+
+* `on_packet(packet: dict, addr: tuple[str, int]) -> None`
+
+  * Callback used by `Dimy.py` to process received share packets.
+
+#### `src/dbf_manager.py`
+
+* `add_encounter(encid: bytes) -> DBFState`
+
+  * Inserts EncID into the current DBF.
+
+* `rotate_if_needed(now: float | None = None) -> DBFState`
+
+  * Creates a new DBF when the current DBF time window expires.
+
+* `get_dbfs() -> list[DBFState]`
+
+  * Returns all currently retained DBFs.
+
+* `build_qbf(now: float | None = None, force: bool = False) -> QBFState | None`
+
+  * Combines all available DBFs into a QBF.
+
+* `build_cbf(now: float | None = None)`
+
+  * Combines all available DBFs into a CBF for backend upload.
+
+#### `src/Dimy.py`
+
+* `DimyNode.start()`
+
+  * Starts the EphID rotation loop, share broadcast loop, and QBF scheduling loop.
+
+* `DimyNode.stop()`
+
+  * Stops all loops and closes sockets.
+
+* `DimyNode.handle_udp_packet(packet: dict, addr: tuple[str, int])`
+
+  * Processes one received UDP share packet.
+
+* `DimyNode.get_dbfs() -> list[DBFState]`
+
+  * Returns DBFs for debugging and testing.
+
+* `DimyNode.get_last_qbf() -> QBFState | None`
+
+  * Returns the most recently generated QBF.
+
+---
