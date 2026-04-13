@@ -301,4 +301,6 @@ This part is responsible for the following protocol stages:
 
   * Returns the most recently generated QBF.
 
+* [`implement`](docs/implementation-yuanqi-lu.md)
+
 ---
