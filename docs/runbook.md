@@ -4,7 +4,6 @@
 
 This runbook provides step-by-step instructions to run the DIMY system, launch the attacker, and observe the attack behaviour. It allows the demo to be reproduced without modifying the code.
 
----
 
 ## 2. Environment Setup
 
@@ -18,7 +17,6 @@ src/
 scripts/  
 docs/  
 
----
 
 ## 3. Running the System
 
@@ -34,7 +32,6 @@ You should see:
 
 Keep this running.
 
----
 
 ### Step 2: Start Normal Nodes
 
@@ -57,7 +54,6 @@ Example logs:
 [nodeA] generated shares...  
 [nodeA] new DBF created...  
 
----
 
 ### Step 3: Start the Attacker
 
@@ -78,7 +74,6 @@ Example logs:
 [run_attacker] starting attacker...  
 [attacker] forged packets sent  
 
----
 
 ## 4. Observing the Attack
 
@@ -97,7 +92,6 @@ Typical output:
 
 This indicates the node has accepted attacker-generated data.
 
----
 
 ## 5. One-command Demo
 
@@ -108,7 +102,6 @@ chmod +x scripts/test_runner.sh
 
 This will automatically start the server, nodes, and attacker.
 
----
 
 ## 6. Stopping the System
 
@@ -118,7 +111,6 @@ Ctrl + C
 
 in each terminal.
 
----
 
 ## 7. Common Issues
 
@@ -128,7 +120,6 @@ Run from project root using:
 
 PYTHONPATH=. python3 ...
 
----
 
 ### Attacker has no effect
 
@@ -138,7 +129,6 @@ Check:
 - Port matches node listening port  
 - Enough shares are sent (meet threshold k)  
 
----
 
 ### Nodes show no activity
 
@@ -148,7 +138,6 @@ Check:
 - Nodes are started before attacker  
 - Ports are consistent  
 
----
 
 ## 8. Expected Outcome
 
