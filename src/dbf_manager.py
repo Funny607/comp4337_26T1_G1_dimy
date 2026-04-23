@@ -270,3 +270,4 @@ class DBFManager:
         for dbf in self.get_dbfs():
             cbf.union_inplace(dbf.bloom)
         return cbf
+

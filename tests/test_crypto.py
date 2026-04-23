@@ -146,3 +146,4 @@ def test_derive_encounter_id_rejects_bad_hash_string() -> None:
             my_ephid_hash="not-a-hex-hash",
             peer_ephid_hash=bob.ephid_hash,
         )
+

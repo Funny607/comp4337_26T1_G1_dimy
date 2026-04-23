@@ -255,3 +255,4 @@ def test_invalid_payload_received_is_ignored() -> None:
     finally:
         raw_sock.close()
         transport.stop()
+

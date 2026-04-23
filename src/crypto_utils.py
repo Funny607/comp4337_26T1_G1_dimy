@@ -165,3 +165,4 @@ def derive_encounter_id(
         info=info,
     )
     return hkdf.derive(shared_secret)
+

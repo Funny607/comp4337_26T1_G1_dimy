@@ -74,3 +74,4 @@ def test_qbf_contains_encounters_from_multiple_dbfs() -> None:
     assert qbf.dbf_count == 2
     assert qbf.bloom.contains(first_encid) is True
     assert qbf.bloom.contains(second_encid) is True
+

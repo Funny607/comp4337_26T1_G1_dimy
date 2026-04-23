@@ -119,3 +119,4 @@ def test_one_node_records_only_one_encounter_for_same_peer_epoch() -> None:
         bob.handle_udp_packet(packet, ("127.0.0.1", 50003))
 
     assert len(bob_hits) == 1
+

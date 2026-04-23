@@ -125,3 +125,4 @@ def test_reconstructed_secret_matches_original_random_like_input() -> None:
 
     recovered = combine_shares([shares[1], shares[3], shares[4], shares[5]], k=4)
     assert recovered == secret
+

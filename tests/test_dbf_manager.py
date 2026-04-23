@@ -83,3 +83,4 @@ def test_qbf_is_cached_within_same_period() -> None:
     now[0] += 540.0
     qbf3 = manager.build_qbf()
     assert qbf3 is not qbf1
+

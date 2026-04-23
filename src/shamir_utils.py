@@ -259,3 +259,4 @@ def deserialize_share(text: str) -> ShamirShare:
     _ = _unpack_field_elements(value)
 
     return ShamirShare(index=index, value=value)
+
