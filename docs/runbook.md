@@ -37,9 +37,9 @@ Keep this running.
 
 Open 2–3 terminals and run:
 
-PYTHONPATH=. python3 src/DimyNode.py nodeA  
-PYTHONPATH=. python3 src/DimyNode.py nodeB  
-PYTHONPATH=. python3 src/DimyNode.py nodeC  
+PYTHONPATH=. python3 src/Dimy.py nodeA  
+PYTHONPATH=. python3 src/Dimy.py nodeB  
+PYTHONPATH=. python3 src/Dimy.py nodeC  
 
 Expected behaviour:
 

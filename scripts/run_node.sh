@@ -9,7 +9,7 @@ PYTHON_BIN="${PYTHON_BIN:-python3}"
 T="${T:-15}"
 K="${K:-3}"
 N="${N:-5}"
-P="${P:-20}"
+P="${P:-30}"
 
 SERVER_IP="${SERVER_IP:-127.0.0.1}"
 SERVER_PORT="${SERVER_PORT:-55000}"
@@ -21,6 +21,9 @@ BIND_PORT="${BIND_PORT:-37020}"
 TARGET_IP="${TARGET_IP:-255.255.255.255}"
 TARGET_PORT="${TARGET_PORT:-37020}"
 
+POSITIVE_AFTER="${POSITIVE_AFTER:-}"
+NO_BACKEND_QUERY="${NO_BACKEND_QUERY:-0}"
+NO_INTERACTIVE="${NO_INTERACTIVE:-0}"
 QUIET="${QUIET:-0}"
 
 CMD=(
@@ -32,6 +35,18 @@ CMD=(
   --target-ip "$TARGET_IP"
   --target-port "$TARGET_PORT"
 )
+
+if [[ -n "$POSITIVE_AFTER" ]]; then
+  CMD+=(--positive-after "$POSITIVE_AFTER")
+fi
+
+if [[ "$NO_BACKEND_QUERY" == "1" ]]; then
+  CMD+=(--no-backend-query)
+fi
+
+if [[ "$NO_INTERACTIVE" == "1" ]]; then
+  CMD+=(--no-interactive)
+fi
 
 if [[ "$QUIET" == "1" ]]; then
   CMD+=(--quiet)

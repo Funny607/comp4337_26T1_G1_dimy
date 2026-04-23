@@ -9,7 +9,7 @@ PYTHON_BIN="${PYTHON_BIN:-python3}"
 T="${T:-15}"
 K="${K:-3}"
 N="${N:-5}"
-P="${P:-20}"
+P="${P:-30}"
 
 SERVER_IP="${SERVER_IP:-127.0.0.1}"
 SERVER_PORT="${SERVER_PORT:-55000}"
@@ -42,30 +42,65 @@ PIDS+=($!)
 
 sleep 1
 
-for NODE_ID in nodeA nodeB nodeC; do
-  T="$T" \
-  K="$K" \
-  N="$N" \
-  P="$P" \
-  SERVER_IP="$SERVER_IP" \
-  SERVER_PORT="$SERVER_PORT" \
-  NODE_ID="$NODE_ID" \
-  BIND_IP="$BIND_IP" \
-  BIND_PORT="$NODE_BIND_PORT" \
-  TARGET_IP="$TARGET_IP" \
-  TARGET_PORT="$TARGET_PORT" \
-  PYTHON_BIN="$PYTHON_BIN" \
-  bash "$ROOT_DIR/scripts/run_node.sh" &
-  PIDS+=($!)
-done
+T="$T" \
+K="$K" \
+N="$N" \
+P="$P" \
+SERVER_IP="$SERVER_IP" \
+SERVER_PORT="$SERVER_PORT" \
+NODE_ID="nodeA" \
+BIND_IP="$BIND_IP" \
+BIND_PORT="$NODE_BIND_PORT" \
+TARGET_IP="$TARGET_IP" \
+TARGET_PORT="$TARGET_PORT" \
+PYTHON_BIN="$PYTHON_BIN" \
+bash "$ROOT_DIR/scripts/run_node.sh" &
+PIDS+=($!)
+
+T="$T" \
+K="$K" \
+N="$N" \
+P="$P" \
+SERVER_IP="$SERVER_IP" \
+SERVER_PORT="$SERVER_PORT" \
+NODE_ID="nodeB" \
+BIND_IP="$BIND_IP" \
+BIND_PORT="$NODE_BIND_PORT" \
+TARGET_IP="$TARGET_IP" \
+TARGET_PORT="$TARGET_PORT" \
+PYTHON_BIN="$PYTHON_BIN" \
+bash "$ROOT_DIR/scripts/run_node.sh" &
+PIDS+=($!)
+
+T="$T" \
+K="$K" \
+N="$N" \
+P="$P" \
+SERVER_IP="$SERVER_IP" \
+SERVER_PORT="$SERVER_PORT" \
+NODE_ID="nodeC" \
+POSITIVE_AFTER="30" \
+BIND_IP="$BIND_IP" \
+BIND_PORT="$NODE_BIND_PORT" \
+TARGET_IP="$TARGET_IP" \
+TARGET_PORT="$TARGET_PORT" \
+PYTHON_BIN="$PYTHON_BIN" \
+bash "$ROOT_DIR/scripts/run_node.sh" &
+PIDS+=($!)
 
 sleep 1
 
+T="$T" \
+K="$K" \
+N="$N" \
+TARGET_IP="$TARGET_IP" \
+TARGET_PORT="$TARGET_PORT" \
 PYTHON_BIN="$PYTHON_BIN" \
 bash "$ROOT_DIR/scripts/run_attacker.sh" &
 PIDS+=($!)
 
 echo "[test_runner] all processes started"
+echo "[test_runner] nodeC will auto-upload CBF after 30 seconds"
 echo "[test_runner] press Ctrl+C to stop"
 
 wait
